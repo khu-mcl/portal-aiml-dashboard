@@ -22,6 +22,7 @@ import CreateTrainingJob from './create/CreateTrainingJob';
 import StatusPageRows from './status/StatusPageRows';
 import UploadPipelineForm from './pipelines/UploadPipeline';
 import CreateFeatureGroup from './create/CreateFeatureGroup';
+import FederatedLearning from './fl/FederatedLearning';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ListFeatureGroup from './status/ListFeatureGroup';
 import { NavigationBar } from '../navigation';
@@ -54,6 +55,7 @@ class HomePage extends React.Component {
             <Route path='/TrainingJob/Pipeline' element={<UploadPipelineForm logger={logger} />} />
             <Route path='/TrainingJob/CreateFeatureGroup' element={<CreateFeatureGroup logger={logger} />} />
             <Route path='/TrainingJob/ListFeatureGroups' element={<ListFeatureGroup logger={logger} />} />
+            <Route path='/FederatedLearning' element={<FederatedLearning logger={logger} />} />
           </Routes>
               </Col>
             </Row>

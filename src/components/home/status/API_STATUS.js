@@ -18,6 +18,7 @@
 
 import { featureGroupAPI } from '../../../apis/feature-group';
 import { trainingJobAPI } from '../../../apis/training-job';
+import { FLAPI } from '../../../apis/federated-learning';
 
 export const invokeStartTraining = async trainingjobNames => {
   console.log('Retraining called ', trainingjobNames);
