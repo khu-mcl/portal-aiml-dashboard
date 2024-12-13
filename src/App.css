@@ -67,6 +67,11 @@
   font-size: 14px;
 }
 
+.table .no-padding {
+  padding: 0 !important;
+  border: none;
+}
+
 .status-buttons {
   color: rgb(94, 83, 83);
   background-color: #6282F6;
