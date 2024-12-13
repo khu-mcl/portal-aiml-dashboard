@@ -4,11 +4,11 @@ import BTable from 'react-bootstrap/Table';
 import { useTable, useExpanded, useRowSelect } from 'react-table';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
-import { Checkbox, Popup, StepsState } from '../../../components';
+import { Checkbox, Popup, StepsState } from '../../components';
 import GlobalInfo from './GlobalInfo';
 import FLJobInfo from './FLJobInfo';
-import { FLMgr_baseUrl } from '../../../states';
-import { FLAPI } from '../../../apis';
+import { FLMgr_baseUrl } from '../../states';
+import { FLAPI } from '../../apis';
 
 import CreateFederatedLearning from './CreateFederatedLearning';
 

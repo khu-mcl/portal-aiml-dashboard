@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { FLAPI } from '../../../apis';
-import { convertToCommaSeparatedString, getDatalakeNameWithoutConversion } from '../common/CommonMethods';
+import { FLAPI } from '../../apis';
+import { convertToCommaSeparatedString, getDatalakeNameWithoutConversion } from '../home/common/CommonMethods';
 
 const FLJobInfo = props => {
   const [fljobName, setFLJobName] = useState('');

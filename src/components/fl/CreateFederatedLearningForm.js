@@ -5,9 +5,9 @@ import './CreateFederatedLearningForm.css';
 import {
   getDatalakeNameWithoutConversion,
   convertDatalakeDBName,
-} from '../common/CommonMethods';
-import { instance, fl_instance, FLMgr_baseUrl } from '../../../states';
-import { FLAPI, featureGroupAPI, pipelineAPI } from '../../../apis';
+} from '../home/common/CommonMethods';
+import { instance, fl_instance, FLMgr_baseUrl } from '../../states';
+import { FLAPI, featureGroupAPI, pipelineAPI } from '../../apis';
 
 class CreateFederatedLearningForm extends React.Component {
   constructor(props) {

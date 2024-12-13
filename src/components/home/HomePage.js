@@ -22,7 +22,7 @@ import CreateTrainingJob from './create/CreateTrainingJob';
 import StatusPageRows from './status/StatusPageRows';
 import UploadPipelineForm from './pipelines/UploadPipeline';
 import CreateFeatureGroup from './create/CreateFeatureGroup';
-import FederatedLearning from './fl/FederatedLearning';
+import FederatedLearning from '../fl/FederatedLearning';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ListFeatureGroup from './status/ListFeatureGroup';
 import { NavigationBar } from '../navigation';

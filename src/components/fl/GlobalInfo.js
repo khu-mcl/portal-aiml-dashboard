@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { FLMgr_baseUrl } from '../../../states';
-import { FLAPI } from '../../../apis';
+import { FLMgr_baseUrl } from '../../states';
+import { FLAPI } from '../../apis';
 
 const GlobalInfo = props => {
   const [global, setGlobalName] = useState('');
