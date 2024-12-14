@@ -10,6 +10,7 @@ import FLJobInfo from './FLJobInfo';
 import { FLMgr_baseUrl } from '../../states';
 import { FLAPI } from '../../apis';
 
+import { deleteFederatedLearnings } from '../home/status/API_STATUS';
 import CreateFederatedLearning from './CreateFederatedLearning';
 
 const FederatedLearning = props => {
@@ -42,7 +43,6 @@ const FederatedLearning = props => {
     try {
       const result = await FLAPI.getAllGlobal();
       logger('fetchGlobals Result', result);
-
       const jobsWithLocalData = await Promise.all(
         result.data.global_models.map(async job => {
           return await fetchFLJobs(job);
@@ -80,7 +80,7 @@ const FederatedLearning = props => {
             // total_rounds: `${global_status.current_round}/${job.total_rounds}`,
             total_rounds: `${job.total_rounds}/${job.total_rounds}`,
             status: data.status,
-            version: fljobs_data.version,
+            version: job.version,
           };
         } catch (e) {
           console.error(e);
@@ -99,6 +99,29 @@ const FederatedLearning = props => {
 
   const handleCreate = event => {
     setCreatePopup(true);
+  };
+
+  const handleDelete = async event => {
+    console.log('handleDelete starts..');
+    if (selectedFlatRows.length > 0) {
+      let deleteFLList = [];
+      for (const row of selectedFlatRows) {
+        let flDict = {};
+        flDict['global_name'] = row.original.global_name;
+        flDict['version'] = row.original.version;
+        deleteFLList.push(flDict);
+      }
+      console.log('Selected federated learning for deletion : ', deleteFLList);
+      try {
+        await deleteFederatedLearnings(deleteFLList);
+        await fetchGlobals();
+      } catch (error) {
+        console.log(error);
+      }
+      toggleAllRowsSelected(false);
+    } else {
+      alert('Please select at least one');
+    }
   };
 
   const handleGlobalInfoClick = (global_name) => {
@@ -153,13 +176,14 @@ const FederatedLearning = props => {
                 <td style={{ width: '25%' }}>{FLJob.fljob_name}</td>
                 <td style={{ width: '15%' }}/>
                 <td style={{ width: '15%' }}>{FLJob.total_rounds}</td>
-                <td style={{ width: '25%' }}>
+                <td style={{ width: '5%' }}/>
+                <td style={{ width: '20%' }}>
                   <Button
                     variant='primary'
                     style={{ backgroundColor: '#6282f6', border: '#6282f6' }}
                     onClick={() => handleStepStateClick(FLJob.fljob_name, FLJob.version)}
                   >
-                    Detailed Status
+                    Status
                   </Button>
                 </td>
                 <td style={{ width: '10%' }}>
@@ -232,10 +256,16 @@ const FederatedLearning = props => {
         width: '15%',
       },
       {
+        id: 'version',
+        Header: 'Version',
+        accessor: 'version',
+        width: '5%',
+      },
+      {
         id: 'status',
         Header: 'Status',
         accessor: 'status',
-        width: '25%',
+        width: '20%',
       },
       {
         id: 'info',
@@ -262,6 +292,8 @@ const FederatedLearning = props => {
     headerGroups,
     rows,
     prepareRow,
+    selectedFlatRows,
+    toggleAllRowsSelected,
     state: { expanded }
   } = useTable(
     {
@@ -287,7 +319,7 @@ const FederatedLearning = props => {
       <Button variant='primary' size='sm' className="me-2">
         Train
       </Button>
-      <Button variant='primary' size='sm'>
+      <Button variant='primary' size='sm' onClick={e => handleDelete(e)}>
         Delete
       </Button>
 

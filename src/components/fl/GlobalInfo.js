@@ -14,6 +14,8 @@ const GlobalInfo = props => {
   const [datalakeSourceName, setDatalakeSourceName] = useState('');
   const [host, setHost] = useState('');
   const [port, setPort] = useState('');
+  const [enableVersioning, setEnableVersioning] = useState(false);
+  const [version, setVersion] = useState('');
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -50,6 +52,8 @@ const GlobalInfo = props => {
           setDatalakeSourceName(globalData.datalake_source || '');
           setHost(globalData.host || '');
           setPort(globalData.port || '');
+          setEnableVersioning(globalData.enable_versioning || false);
+          setVersion(globalData.version || '');
           setDescription(globalData.description || '');
         } else {
           setError('No data found');
@@ -102,6 +106,13 @@ const GlobalInfo = props => {
       <Form.Group className="mb-4" controlId='port'>
         <Form.Label>Port</Form.Label>
         <Form.Control type='text' value={port} readOnly />
+      </Form.Group>
+      <Form.Group className="mb-4" controlId='Version'>
+        <Form.Label>Version</Form.Label>
+        <Form.Control type='text' value={version} readOnly />
+      </Form.Group>
+      <Form.Group className="mb-4" controlId='EnableVersioning'>
+        <Form.Check type='checkbox' label='Enable versioning' checked={enableVersioning} readOnly />
       </Form.Group>
       <Form.Group className="mb-4" controlId='description'>
         <Form.Label>Description</Form.Label>

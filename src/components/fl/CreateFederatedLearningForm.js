@@ -122,42 +122,59 @@ class CreateFederatedLearningForm extends React.Component {
       });
   }
 
-  handleCreateSubmit = event => {
+  handleCreateSubmit = async (event) => {
     let hyperParametersDict = this.buildHyperParametersDict(this.state.hyperParameters);
     let convertedDatalakeDBName = convertDatalakeDBName(this.state.datalakeSourceName);
     event.preventDefault();
-    FLAPI.createGlobalModel({
-      data: {
-        global_name: this.state.globalModelName,
-        total_clients: this.state.totalClients,
-        total_rounds: this.state.totalRounds,
-        description: this.state.description,
-        datalake_source: convertedDatalakeDBName,
-      }
-    })
-    this.state.clientNames.forEach((clientName, index) => {
-      let clientPipeline = this.state.clientPipelines[index];
-      console.log(`Form submitted ${clientName}`, {
-        globalModelName: this.state.globalModelName,
-        totalClients: this.state.totalClients,
-        totalRounds: this.state.totalRounds,
-        clientPipeline: clientPipeline,
-        featureGroupName: this.state.featureGroupName,
-        datalakeSourceName: this.state.datalakeSourceName,
-        hyperParameters: hyperParametersDict,
-        description: this.state.description,
-        clientName: clientName,
-        enable_versioning: this.state.enableVersioning,
+
+    try {
+      await FLAPI.createGlobalModel({
+        data: {
+          global_name: this.state.globalModelName,
+          total_clients: this.state.totalClients,
+          total_rounds: this.state.totalRounds,
+          description: this.state.description,
+          datalake_source: convertedDatalakeDBName,
+          enable_versioning: this.state.enableVersioning,
+        },
       });
 
-      this.invokeCreateFederatedLearning(clientName, clientPipeline);
-    });
+      const promises = this.state.clientNames.map((clientName, index) => {
+        const clientPipeline = this.state.clientPipelines[index];
+        console.log(`Form submitted ${clientName}`, {
+          globalModelName: this.state.globalModelName,
+          totalClients: this.state.totalClients,
+          totalRounds: this.state.totalRounds,
+          clientPipeline: clientPipeline,
+          featureGroupName: this.state.featureGroupName,
+          datalakeSourceName: this.state.datalakeSourceName,
+          hyperParameters: hyperParametersDict,
+          description: this.state.description,
+          clientName: clientName,
+          enable_versioning: this.state.enableVersioning,
+        });
+
+        return this.invokeCreateFederatedLearning(clientName, clientPipeline);
+      });
+
+      await Promise.all(promises);
+
+      alert("FL Job created and training initiated");
+      this.resetFrom();
+      this.props.fetchFLJobs();
+      this.props.onHideCreatePopup();
+    } catch (error) {
+      alert("Training failed: " + (error.response?.data?.Exception || error.message));
+      this.props.onHideCreatePopup();
+    }
+
     event.preventDefault();
   };
 
-  invokeCreateFederatedLearning(clientName, clientPipeline) {
+  async invokeCreateFederatedLearning(clientName, clientPipeline) {
     let hyperParametersDict = this.buildHyperParametersDict(this.state.hyperParameters);
     let convertedDatalakeDBName = convertDatalakeDBName(this.state.datalakeSourceName);
+
     let FLRequest = {
       global_name: this.state.globalModelName,
       pipeline_name: clientPipeline.pipeline,
@@ -168,47 +185,40 @@ class CreateFederatedLearningForm extends React.Component {
       datalake_source: convertedDatalakeDBName,
       enable_versioning: this.state.enableVersioning,
     };
-    console.log('FLRequest', FLRequest);
-    FLAPI.invokeFLJob({
-      params: {
-        flJobName: clientName
-      },
-      data: FLRequest
+
+    console.log("FLRequest", FLRequest);
+
+    return FLAPI.invokeFLJob({
+      params: { flJobName: clientName },
+      data: FLRequest,
     })
-      .then(res => {
-        this.logger('Server responded FL', res.data);
-        // this.invokeStartTrainingForCreate(clientName);
-      }
-      )
-      .catch(error => {
-        this.logger('Got some error' + error);
-        console.log('Got some error' + error);
-      }
-      );
+      .then((res) => {
+        this.logger("Server responded FL", res.data);
+        return this.invokeStartTrainingForCreate(clientName);
+      })
+      .catch((error) => {
+        this.logger("Got some error" + error);
+        throw error;
+      });
   }
 
   invokeStartTrainingForCreate(clientName) {
-    this.logger('Training called ');
-    FLAPI.startTraining({
-      params: {
-        flJobName: clientName
-      }
+    this.logger("Training called");
+
+    return FLAPI.startTraining({
+      params: { flJobName: clientName },
     })
-      .then(res => {
-        this.logger('Training  responsed ', res);
+      .then((res) => {
+        this.logger("Training response", res);
         if (res.status === 200) {
-          alert('FL Job created and training initiated');
-          this.resetFrom();
-          this.props.onHideCreatePopup();
-          this.props.fetchTrainingJobs();
+          return true;
+        } else {
+          throw new Error("Training failed with status " + res.status);
         }
       })
-      .catch(error => {
-        this.logger('Error in training api,response', error.response.data);
-        alert('Training failed: ' + error.response.data.Exception);
-      })
-      .then(function () {
-        // always executed
+      .catch((error) => {
+        this.logger("Error in training API, response", error.response?.data);
+        throw error;
       });
   }
 
