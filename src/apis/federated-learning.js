@@ -19,4 +19,7 @@ export const FLAPI = {
   startTraining: async ({ params }) => {
     return await fl_instance.post(`/fljobs/${params.flJobName}/training`);
   },
+  deleteFederatedLearning: async ({ data }) => {
+    return await fl_instance.delete('/global', { ...data });
+  },
 };

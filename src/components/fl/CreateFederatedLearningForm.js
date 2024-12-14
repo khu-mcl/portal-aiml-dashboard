@@ -133,6 +133,7 @@ class CreateFederatedLearningForm extends React.Component {
         total_rounds: this.state.totalRounds,
         description: this.state.description,
         datalake_source: convertedDatalakeDBName,
+        enable_versioning: this.state.enableVersioning,
       }
     })
     this.state.clientNames.forEach((clientName, index) => {

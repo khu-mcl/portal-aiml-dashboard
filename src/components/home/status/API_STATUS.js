@@ -55,3 +55,16 @@ export const deleteFeatureGroups = async featureGroup_names => {
     console.log('error is : ', error);
   }
 };
+
+export const deleteFederatedLearnings = async deleteFLList => {
+  console.log('Delete API called ', deleteFLList);
+  try {
+    console.log('Data:', { data: { data: { list: deleteFLList } } });
+    const res = await FLAPI.deleteFederatedLearning({ data: { data: { list: deleteFLList } } });
+    console.log('Delete API response', res);
+    let result = 'FederatedLeraning deletion initiated for selected GlobalModel(s) ,Result' + '\n' + JSON.stringify(res.data);
+    alert(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
