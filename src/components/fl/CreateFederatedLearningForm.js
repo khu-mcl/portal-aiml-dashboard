@@ -161,7 +161,7 @@ class CreateFederatedLearningForm extends React.Component {
 
       alert("FL Job created and training initiated");
       this.resetFrom();
-      this.props.fetchFLJobs();
+      this.props.fetchGlobals();
       this.props.onHideCreatePopup();
     } catch (error) {
       alert("Training failed: " + (error.response?.data?.Exception || error.message));
@@ -399,6 +399,19 @@ class CreateFederatedLearningForm extends React.Component {
         this.logger('after set state, enableVersioning: ', this.state.enableVersioning);
       },
     );
+  };
+
+  resetFrom = () => {
+    this.setState({
+      globalModelName: '',
+      totalClients: '',
+      totalRounds: '',
+      featureGroupName: '',
+      datalakeSourceName: '',
+      hyperParameters: '',
+      description: '',
+      enableVersioning: false,
+    });
   };
 
   render() {
