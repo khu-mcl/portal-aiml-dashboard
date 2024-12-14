@@ -25,8 +25,7 @@ import CreateFederatedLearningForm from './CreateFederatedLearningForm';
 class CreateFederatedLearning extends React.Component {
   constructor(props) {
     super(props);
-    this.fetchGlobalJobs = this.props.fetchGlobalJobs;
-    this.fetchFLJobs = this.props.fetchFLJobs;
+    this.fetchGlobals = this.props.fetchGlobals;
     this.logger = this.props.logger;
   }
   popover = () => (
@@ -83,8 +82,7 @@ class CreateFederatedLearning extends React.Component {
           isCreateFederatedLearningForm={true}
           logger={this.logger}
           onHideCreatePopup={this.props.onHideCreatePopup}
-          // fetchGlobalJobs={this.fetchGlobalJobs}
-          fetchFLJobs={this.fetchFLJobs}
+          fetchGlobals={this.fetchGlobals}
         ></CreateFederatedLearningForm>
       </>
     );

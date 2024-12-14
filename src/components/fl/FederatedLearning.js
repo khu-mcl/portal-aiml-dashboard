@@ -385,7 +385,7 @@ const FederatedLearning = props => {
       </BTable>
 
       <Popup show={createPopup} onHide={closeCreatePopup} title='Create Federated Learning' size='lg'>
-        <CreateFederatedLearning logger={logger} onHideCreatePopup={closeCreatePopup} />
+        <CreateFederatedLearning logger={logger} onHideCreatePopup={closeCreatePopup} fetchGlobals={fetchGlobals} />
       </Popup>
       <Popup show={globalInfoPopup} onHide={closeGlobalInfoPopup} title='Global Model Info'>
         <GlobalInfo global={globalInfo} />
