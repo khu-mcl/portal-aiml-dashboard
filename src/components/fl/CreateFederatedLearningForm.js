@@ -21,13 +21,13 @@ class CreateFederatedLearningForm extends React.Component {
       pipelineVersionList: [],
       clientPipelines: {},
       clientNames: [],
+      clientFeatureFilters: {},
       featureGroupName: '',
       featureGroupList: [],
       datalakeSourceList: ['Influx DB'],
       datalakeSourceName: '',
       hyperParameters: '',
       description: '',
-      featureFilters: '',
       enableVersioning: false,
     };
 
@@ -142,11 +142,13 @@ class CreateFederatedLearningForm extends React.Component {
 
       const promises = this.state.clientNames.map((clientName, index) => {
         const clientPipeline = this.state.clientPipelines[index];
+        const clientFeatureFilter = this.state.clientFeatureFilters[index];
         console.log(`Form submitted ${clientName}`, {
           globalModelName: this.state.globalModelName,
           totalClients: this.state.totalClients,
           totalRounds: this.state.totalRounds,
           clientPipeline: clientPipeline,
+          clientFeatureFilter: clientFeatureFilter,
           featureGroupName: this.state.featureGroupName,
           datalakeSourceName: this.state.datalakeSourceName,
           hyperParameters: hyperParametersDict,
@@ -155,7 +157,7 @@ class CreateFederatedLearningForm extends React.Component {
           enable_versioning: this.state.enableVersioning,
         });
 
-        return this.invokeCreateFederatedLearning(clientName, clientPipeline);
+        return this.invokeCreateFederatedLearning(clientName, clientPipeline, clientFeatureFilter);
       });
 
       await Promise.all(promises);
@@ -172,7 +174,7 @@ class CreateFederatedLearningForm extends React.Component {
     event.preventDefault();
   };
 
-  async invokeCreateFederatedLearning(clientName, clientPipeline) {
+  async invokeCreateFederatedLearning(clientName, clientPipeline, clientFeatureFilter) {
     let hyperParametersDict = this.buildHyperParametersDict(this.state.hyperParameters);
     let convertedDatalakeDBName = convertDatalakeDBName(this.state.datalakeSourceName);
 
@@ -182,7 +184,7 @@ class CreateFederatedLearningForm extends React.Component {
       pipeline_version: clientPipeline.version,
       featuregroup_name: this.state.featureGroupName,
       arguments: hyperParametersDict,
-      query_filter: this.state.featureFilters,
+      query_filter: clientFeatureFilter,
       description: this.state.description,
       datalake_source: convertedDatalakeDBName,
       enable_versioning: this.state.enableVersioning,
@@ -308,8 +310,14 @@ class CreateFederatedLearningForm extends React.Component {
     }));
   };
 
-  handleFeatureFiltersChange = event => {
-    this.setState({ featureFilters: event.target.value });
+  handleFeatureFiltersChange = (event, clientIndex) => {
+    const filterValue = event.target.value;
+    this.setState(prevState => ({
+      clientFeatureFilters: {
+        ...prevState.clientFeatureFilters,
+        [clientIndex]: filterValue
+      }
+    }));
   };
 
   handleFeatureGroupNameChange = event => {
@@ -382,12 +390,12 @@ class CreateFederatedLearningForm extends React.Component {
             </Form.Group>
           )}
 
-          <Form.Group className="mb-2" controlId="ftFilter">
+          <Form.Group className="mb-2" controlId={`ftFilter-${i}`}>
             <Form.Label>Feature Filter</Form.Label>
             <Form.Control
               type="text"
-              value={this.state.featureFilters}
-              onChange={this.handleFeatureFiltersChange}
+              value={this.state.clientFeatureFilters[i] || ''}
+              onChange={(e) => this.handleFeatureFiltersChange(e, i)}
               placeholder="Filtering Clause for the Selected KPI's"
             >
             </Form.Control>
