@@ -27,6 +27,7 @@ class CreateFederatedLearningForm extends React.Component {
       datalakeSourceName: '',
       hyperParameters: '',
       description: '',
+      featureFilters: '',
       enableVersioning: false,
     };
 
@@ -181,6 +182,7 @@ class CreateFederatedLearningForm extends React.Component {
       pipeline_version: clientPipeline.version,
       featuregroup_name: this.state.featureGroupName,
       arguments: hyperParametersDict,
+      query_filter: this.state.featureFilters,
       description: this.state.description,
       datalake_source: convertedDatalakeDBName,
       enable_versioning: this.state.enableVersioning,
@@ -306,6 +308,10 @@ class CreateFederatedLearningForm extends React.Component {
     }));
   };
 
+  handleFeatureFiltersChange = event => {
+    this.setState({ featureFilters: event.target.value });
+  };
+
   handleFeatureGroupNameChange = event => {
     this.setState({ featureGroupName: event.target.value });
   };
@@ -375,6 +381,17 @@ class CreateFederatedLearningForm extends React.Component {
               </Form.Control>
             </Form.Group>
           )}
+
+          <Form.Group className="mb-2" controlId="ftFilter">
+            <Form.Label>Feature Filter</Form.Label>
+            <Form.Control
+              type="text"
+              value={this.state.featureFilters}
+              onChange={this.handleFeatureFiltersChange}
+              placeholder="Filtering Clause for the Selected KPI's"
+            >
+            </Form.Control>
+          </Form.Group>
         </div>
       );
     }
