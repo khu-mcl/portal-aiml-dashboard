@@ -132,8 +132,8 @@ class CreateFederatedLearningForm extends React.Component {
       await FLAPI.createGlobalModel({
         data: {
           global_name: this.state.globalModelName,
-          total_clients: this.state.totalClients,
-          total_rounds: this.state.totalRounds,
+          total_clients: parseInt(this.state.totalClients),
+          total_rounds: parseInt(this.state.totalRounds),
           description: this.state.description,
           datalake_source: convertedDatalakeDBName,
           enable_versioning: this.state.enableVersioning,
@@ -142,11 +142,11 @@ class CreateFederatedLearningForm extends React.Component {
 
       const promises = this.state.clientNames.map((clientName, index) => {
         const clientPipeline = this.state.clientPipelines[index];
-        const clientFeatureFilter = this.state.clientFeatureFilters[index];
+        const clientFeatureFilter = this.state.clientFeatureFilters[index] || '';
         console.log(`Form submitted ${clientName}`, {
           globalModelName: this.state.globalModelName,
-          totalClients: this.state.totalClients,
-          totalRounds: this.state.totalRounds,
+          totalClients: parseInt(this.state.totalClients),
+          totalRounds: parseInt(this.state.totalRounds),
           clientPipeline: clientPipeline,
           clientFeatureFilter: clientFeatureFilter,
           featureGroupName: this.state.featureGroupName,
